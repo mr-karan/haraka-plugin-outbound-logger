@@ -1,0 +1,10 @@
+engines:
+  eslint:
+    enabled: true
+    channel: "eslint-8"
+    config:
+      config: ".eslintrc.yaml"
+
+ratings:
+   paths:
+   - "**.js"

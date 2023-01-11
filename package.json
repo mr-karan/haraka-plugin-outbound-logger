@@ -1,0 +1,37 @@
+{
+  "name": "haraka-plugin-outbound-logger",
+  "version": "0.1.0",
+  "description": "Haraka plugin that emits useful information from the outbound traffic as JSON logs",
+  "main": "index.js",
+  "scripts": {
+    "lint": "npx eslint *.js test/*.js",
+    "lintfix": "npx eslint --fix *.js test/*.js",
+    "versions": "npx dependency-version-checker check",
+    "test": "npx mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mr-karan/haraka-plugin-outbound-logger.git"
+  },
+  "keywords": [
+    "haraka",
+    "plugin",
+    "outbound-logger",
+    "pino",
+    "json-logs",
+    "outbound",
+    "delivery-logs"
+  ],
+  "author": "Karan Sharma <mr-karan>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mr-karan/haraka-plugin-outbound-logger/issues"
+  },
+  "homepage": "https://github.com/mr-karan/haraka-plugin-outbound-logger#readme",
+  "devDependencies": {
+    "eslint": "8",
+    "eslint-plugin-haraka": "*",
+    "haraka-test-fixtures": "*",
+    "mocha": "9"
+  }
+}
