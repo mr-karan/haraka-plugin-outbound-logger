@@ -5,7 +5,6 @@ var path = require("path");
 var pino = require('pino');
 var cfg;
 
-
 exports.register = function () {
   var plugin = this;
 
@@ -45,46 +44,39 @@ exports.init_plugin = function (next) {
     },
   }
 
-
   var streams = []
 
   // Configure a different destination.
   if (cfg.hasOwnProperty("stdout")) {
-    if (cfg.stdout.enable === "true") {
+    if (cfg.stdout.enable === true) {
       streams.push({ stream: pino.destination(1) })
-      // context.pilog = pino(opts, pino.destination(1));
     } else {
       context.loginfo("stdout is disabled.");
     }
   }
 
   if (cfg.hasOwnProperty("file")) {
-    if (cfg.file.enable === "true") {
+    if (cfg.file.enable === true) {
       if (cfg.file.log_dir === "" || cfg.file.log_dir === undefined) {
         context.logerror("file path is not defined.");
       } else {
-        streams.push({ stream: pino.destination({ dest: path.join(cfg.file.log_dir, 'haraka_outbound.log'), append: true, sync: true }) })
-        // context.pilog = pino(opts, pino.destination(
-        //   { dest: cfg.file.path, sync: false }
-        // ));
+        streams.push({ stream: pino.destination({ dest: path.join(cfg.file.log_dir, 'haraka_outbound.log'), append: true, sync: cfg.file.sync }) })
       }
     } else {
       context.loginfo("file logging is disabled.");
     }
   }
 
+  // Initialise pino and set in context.
   context.pilog = pino(opts, pino.multistream(streams))
-
-  if (context.pilog === undefined) {
-    context.logerror("No logging object is initialised. Please check the config file.");
-  }
 
   context.loginfo("Plugin is Ready!");
   return next();
 };
 
 exports.set_header_to_note = function (next, connection) {
-  //Setting the header to notes before sent, we will need it in 'delivered/bounce/deferred' hooks to get "custom_FIELD" parameters
+  // Setting the header to notes before sent, we will need it in 'delivered/bounce/deferred' hooks to get "custom_field" parameters.
+  // NOTE: This is unused as of now, the plugin doesn't log custom fields. Future support may be added, if required.
   connection.transaction.notes.header = connection.transaction.header;
 
   return next();
@@ -228,9 +220,12 @@ exports.handle_bounced = function (next, hmail, error) {
 
   plugin.loginfo("Bounced Record Added.");
 
-  // Prevent the sending of bounce mail to originating sender.
-  // NOTE: No plugin in the chain will get executed after this.
-  return next(OK);
+  if (cfg.main.stop_at_bounce === true) {
+    // Prevent the sending of bounce mail to originating sender.
+    return next(OK);
+  }
+
+  return next();
 };
 
 exports.shutdown = function () {
@@ -246,7 +241,14 @@ exports.load_outbound_logger_ini = function () {
   var plugin = this;
 
   plugin.loginfo("Config is loaded from 'outbound_logger.ini'.");
-  cfg = plugin.config.get("outbound_logger.ini",
+  cfg = plugin.config.get("outbound_logger.ini", {
+    booleans: [
+      '+stop_at_bounce',         // plugins.cfg.main.stop_at_bounce=true
+      '-stdout.enable',          // plugins.cfg.stdout.enable=false
+      '-file.enable',            // plugins.cfg.file.enable=false
+      '+file.sync',              // plugins.cfg.file.sync=true
+    ]
+  },
     function () {
       plugin.register();
     });

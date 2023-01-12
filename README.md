@@ -28,6 +28,11 @@ Create a config file `outbound_logger.ini` inside the config directory. This fil
 ;enable = false
 ;Directory to store the log files. Ensure the process running Haraka has ownership on this directory.
 ;log_dir = /var/log/haraka_outbound/
+;Enable synchronous logging to a file. Defaults to true. For better peformance where some messages may be lost in the event of a crash, set to false.
+;sync = true
+
+; Whether to stop invoking any plugin in the chain after a BOUNCE hook is called. Defaults to true. Set to false if you want to handle the bounce in another plugin.
+;stop_at_bounce = true
 ```
 
 The plugin supports logging to multiple output streams, so you can optionally enable both stdout/file logging.
