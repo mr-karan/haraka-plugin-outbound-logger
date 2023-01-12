@@ -4,15 +4,15 @@
 
 ### Install
 
-```
-npm install haraka-plugin-outbound-logger
+```bash
+npm install "https://github.com/mr-karan/haraka-plugin-outbound-logger.git#main" --save
 ```
 
-Add the plugin `outbound-logger` in `config/plugins`. You can add it 
+To enable the plugin, add the name of the plugin (`outbound-logger`) inside `config/plugins` file.
 
 ### Configuration
 
-Add `outbound_logger.ini` inside `config/` folder. Haraka will read this config when the plugin registers.
+Create a config file `outbound_logger.ini` inside the config directory. This file is read when `outbound-logger` plugin is being registered by Haraka.
 
 ```ini
 ;[stdout]
@@ -95,3 +95,7 @@ The plugin supports logging to multiple output streams, so you can optionally en
     "undelivered_reason": "550 - Domain example.org sends and receives no email (NULL MX)"
 }
 ```
+
+## Notes
+
+- Recommended way to use the plugin is to hook up with an external log collection agent (Fluentbit/Vector) and send the logs to a centralised log store (Elasticsearch/S3 etc).
