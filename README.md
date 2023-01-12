@@ -1,1 +1,97 @@
 # haraka-plugin-outbound-logger
+
+## Using
+
+### Install
+
+```
+npm install haraka-plugin-outbound-logger
+```
+
+Add the plugin `outbound-logger` in `config/plugins`. You can add it 
+
+### Configuration
+
+Add `outbound_logger.ini` inside `config/` folder. Haraka will read this config when the plugin registers.
+
+```ini
+;[stdout]
+; Whether to enable logging to STDOUT. Defaults to false.
+;enable = false
+
+;[file]
+; Whether to enable file logging. Defaults to false.
+;enable = false
+;Directory to store the log files. Ensure the process running Haraka has ownership on this directory.
+;log_dir = /var/log/haraka_outbound/
+```
+
+The plugin supports logging to multiple output streams, so you can optionally enable both stdout/file logging.
+
+## Sample Record Output
+
+### Delivered
+
+```json
+{
+    "level": "info",
+    "time": "2023-01-11T11:13:35.987Z",
+    "pid": 2576454,
+    "hostname": "ip-192-168-40-144",
+    "name": "outbound_logger",
+    "type": "delivered",
+    "job_id": "B3D5DE63-94AB-4825-B43F-2FB11E89261B.1.1",
+    "queue_time": "2023-01-11T11:13:33.726Z",
+    "smtp_host": "aspmx.l.google.com",
+    "smtp_ip": "74.125.24.27",
+    "smtp_response": "OK  1673435615 q65-20020a632a44000000b004acd87cc977si13197979pgq.659 - gsmtp",
+    "smtp_delay": 2.26,
+    "smtp_port": 25,
+    "recipient": "user@example.com",
+    "from": "test@smtp.example.net",
+    "subject": "Test"
+}
+```
+
+### Deferred
+
+```json
+{
+    "level": "info",
+    "time": "2023-01-11T11:26:44.377Z",
+    "pid": 2580208,
+    "hostname": "ip-192-168-40-144",
+    "name": "outbound_logger",
+    "type": "deferred",
+    "job_id": "7B5DB89F-691C-49C1-88A1-3539E066692C.1.1",
+    "queue_time": "2023-01-11T11:26:43.993Z",
+    "recipient": "user@example.com",
+    "from": "test@smtp.example.net",
+    "subject": "Test",
+    "dsn_status": "4.7.1",    
+    "dsn_action": "delayed",
+    "undelivered_reason": "4.7.1 <user@example.com>: Recipient address rejected: Temporary deferral, try again soon",
+    "delay": "2.5"
+}
+```
+
+### Bounced
+
+```json
+{
+    "level": "info",
+    "time": "2023-01-11T11:26:44.377Z",
+    "pid": 2580208,
+    "hostname": "ip-192-168-40-144",
+    "name": "outbound_logger",
+    "type": "bounced",
+    "job_id": "D555E3AC-3977-4B8F-A2FF-5A53567595B9.1.1",
+    "queue_time": "2023-01-11T11:26:43.993Z",
+    "recipient": "user@example.com",
+    "from": "test@smtp.example.net",
+    "subject": "Test",
+    "dsn_status": "5.1.2",
+    "dsn_action": "failed",
+    "undelivered_reason": "550 - Domain example.org sends and receives no email (NULL MX)"
+}
+```
