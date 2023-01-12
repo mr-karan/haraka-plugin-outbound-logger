@@ -1,6 +1,10 @@
 # haraka-plugin-outbound-logger
 
-## Using
+## What
+
+Haraka SMTP plugin to log outbound SMTP traffic which maybe useful for debugging/audit purposes. Haraka provides a way to add external plugins by registering them and invoking various "hooks" during the complete lifecycle of the SMTP server handling an email message. This plugin listens for the `delivered`,`deferred` and `bounced` hook calling during [Outbound delivery](https://haraka.github.io/core/Outbound/) and logs useful metadata to a file or STDOUT in JSON.
+
+This plugin uses [PinoJS](https://github.com/pinojs/pino) for a high performant JSON logger. 
 
 ### Install
 
